@@ -12,6 +12,8 @@ public class BlackJackGame {
     private BlackJackHand playersHand;
     private BlackJackHand dealersHand;
 
+    private int lastBet = 0;
+
     private final double BLACKJACK_PAYOUT = 1.5;
     private final double INSURANCE_PAYOUT = 2.0;
 
@@ -140,9 +142,7 @@ public class BlackJackGame {
         dealersHand = new BlackJackHand(deck);
 
         ui.showBalance(player);
-        int bet = ui.placeBet(player);
-        playersHand.setBet(bet);
-        player.getAccount().withdraw(bet);
+        bet();
 
         ui.preDeal();
 
@@ -152,6 +152,15 @@ public class BlackJackGame {
         dealersHand.deal();
 
         ui.deal(playersHand, dealersHand);
+    }
+
+    /* 
+     * Handles the player's bet.
+     */
+    private void bet() {
+        this.lastBet = ui.placeBet(player, this.lastBet);
+        playersHand.setBet(this.lastBet);
+        player.getAccount().withdraw(this.lastBet);
     }
 
     /* 
