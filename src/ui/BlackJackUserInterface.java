@@ -44,7 +44,7 @@ public interface BlackJackUserInterface {
     /*
      * UI acions for placing a bet
      */
-    public int placeBet(Player player);
+    public int placeBet(Player player, int lastBet);
 
     /*
      * UI actions needed for winning

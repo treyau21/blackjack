@@ -62,26 +62,33 @@ public class BlackJackTextUserInterface implements BlackJackUserInterface {
         System.out.println("Dealer does not have blackjack - Insurance lost");
     }
 
-    public int placeBet(Player player) {
+    public int placeBet(Player player, int lastBet) {
         int retVal = 0;
         suspense(SuspenseType.MINOR);
-        System.out.print("Place your bet: $");
+        System.out.print("Place your bet" +(lastBet>0 ? " [$" + lastBet + "]" : "") + ": $");
 
         try {
-            retVal = Integer.parseInt(scanner.nextLine());
+            String input = scanner.nextLine();
+
+            // Handle ENTER key press (default to last bet)
+            if(input.isEmpty()) {
+                retVal = lastBet;
+            } else { // Else convert to integer bet
+                retVal = Integer.parseInt(input);
+            }
 
             // Check balance
             if(retVal > player.getAccount().getBalance()) {
                 System.out.println("Insufficient funds. Please try again.");
-                retVal = placeBet(player);
+                retVal = placeBet(player, lastBet);
             } else if(retVal <= 0) {
                 System.out.println("Invalid input. Please try again.");
-                retVal = placeBet(player);
+                retVal = placeBet(player, lastBet);
             }
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please try again.");
-            retVal = placeBet(player);
+            retVal = placeBet(player, lastBet);
         }
 
         return retVal;
@@ -154,7 +161,7 @@ public class BlackJackTextUserInterface implements BlackJackUserInterface {
         suspense(SuspenseType.MINOR);
         System.out.print("\nDo you want to play again? (y/n): ");
         String input = scanner.nextLine();
-        return input.equalsIgnoreCase("y");
+        return input.equalsIgnoreCase("y") || input.isEmpty();
     }
 
     public void showBalance(Player player) {
